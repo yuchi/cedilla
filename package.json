@@ -1,0 +1,15 @@
+{
+	'name'         : 'cedilla',
+	'description'  : 'I18N and L10N tools for server and client side applications',
+	'keywords'     : ['l10n','i18n','translation'],
+	'version'      : '0.1',
+	'author'       : 'Pier Paolo Ramon <ramonpierre@gmail.com>',
+	'directories'  : {
+		'docs' : './docs'
+	},
+	'main'         : 'cedilla.js',
+	'dependencies' : {
+		'underscore' : '1.1.6'
+	},
+	'devDependencies' : ['docco >= 0.3']
+}
