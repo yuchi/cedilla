@@ -20,6 +20,14 @@
 		return cedilla.translate(key,data);
 	};
 
+	// Requires Underscore.js
+	var _;
+	if (typeof require != 'undefined') {
+		_ = require('underscore');
+	} else {
+		_ = root.underscore || root._;
+	}
+
 	// Export the Cedilla object for **CommonJS**, with backwards-compatibility
 	// for the old `require()` API. If we're not in CommonJS, add `ç` and `cedilla`
 	// to the global object.
