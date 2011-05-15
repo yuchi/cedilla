@@ -158,7 +158,11 @@
 
 	// Actual tranlsate method
 	cedilla.translate = function (key,data) {
-		return cedilla.strings[key](data);
+		if (cedilla.strings[key]) {
+			return cedilla.strings[key](data);
+		} else {
+			return key;
+		}
 	};
 
 	// Be able to use the `ç` character
