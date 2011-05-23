@@ -180,7 +180,8 @@
 		// Retrieve informations from [Locale Planet](http://www.localeplanet.com)
 		retrieveInfo : function () {
 			this.icu = {};
-			var url = 'http://www.localeplanet.com/api/'+this.code+'/icu.js',
+			var lang = this,
+				url = 'http://www.localeplanet.com/api/'+this.code+'/icu.js',
 				objectname = 'window.cedilla.languages.'+this.code+'.icu';
 			if (root.jQuery && root.jQuery.ajax) {
 				root.jQuery.ajax({
@@ -197,8 +198,26 @@
 					}*/
 				});
 			} else {
-				console.log("There is no information retrival for node.js by now... Sorry");
-				/* help! Please*/
+				var vm = require('vm'),
+					http = require('http'),
+					untrustedCode = [],
+					completeCode = '',
+					request = http.createClient(80,'www.localeplanet.com').request(
+						'GET', '/api/'+this.code+'/icu.js', {host:'www.localeplanet.com'});
+					// Starting the request to localeplanet.com
+					request.end();
+					var sandbox = {window: { icu: {} }};
+					request.on('response',function(response){
+						response.setEncoding('utf8');
+						response.on('data', function (chunk) {
+							untrustedCode.push(chunk);
+						});
+						response.on('end',function (){
+							completeCode = untrustedCode.join('');
+							vm.runInNewContext(completeCode, sandbox);
+							lang.icu = sandbox.window.icu;
+						});
+					});
 			}
 		},
 
