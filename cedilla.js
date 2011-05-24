@@ -46,10 +46,10 @@
 
 	// Main build regexps, `{# ... #}` for evaluation, `{ ... }` for interpolation.
 	cedilla.buildSettings = {
-		evaluate          : /\{#([\s\S]+?)#}/g,
-		evaluateString    : /^\{#([\s\S]+?)#}$/,
-		interpolate	      : /\{([^#]+[\s\S]*?)}/g,
-		interpolateString : /^\{(\!|\^|)([^#]+[\s\S]*?)}$/
+		evaluate          : /\{#([\s\S]+?)#\}/g,
+		evaluateString    : /^\{#([\s\S]+?)#\}$/,
+		interpolate	      : /\{([^#\}]+[\s\S]*?)\}/g,
+		interpolateString : /^\{(\!|\^|)([^#\}]+[\s\S]*?)\}$/
 	};
 
 	// Builds the translation object. Stolen from Underscore.js.
