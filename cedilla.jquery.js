@@ -47,7 +47,7 @@
 
 			var msg = cedilla(nkey,data,onTranslate);
 
-			$this.text(msg);
+			$this.html(msg);
 
 		});
 
@@ -73,7 +73,10 @@
 
 			if (!func) {
 				var key = $this.data('partial'),
-					tmpl = $this.data('useInnerHtml') ? this.innerHTML : $this.html();
+					tmpl =
+						$this.data('useInnerHtml') ?
+						this.innerHTML : 
+						($("<div />").append($(this).clone()).html());
 				$this.removeData('partial');
 				$this.removeAttr('data-partial');
 				func = cedilla.buildFunc(tmpl);
