@@ -1,5 +1,7 @@
 (function($){
 
+	var window = this;
+
 	$.fn.cedilla = function (key, dataParam, lang, options) {
 
 		options || (options = {});
@@ -17,6 +19,8 @@
 			key = undefined;
 		}
 
+		_.defaults(options, {textMode : false});
+
 		this.each(function(){
 
 			var $this = $(this);
@@ -25,6 +29,10 @@
 
 			$this.data('cedilla',$this.attr('cedilla'));
 			$this.removeAttr('data-cedilla');
+
+			if (!nkey || $this.data('translated')) {
+				return;
+			}
 
 			var data = options.param ? $this.data(options.param) : $this.data();
 				onTranslateBody = $this.attr('ontranslate') || $this.attr('onTranslate');
@@ -47,8 +55,11 @@
 
 			var msg = cedilla(nkey,data,onTranslate);
 
-			$this.html(msg);
+			$this[options.textMode ? 'text' : 'html'](msg);
 
+			$this.find('[data-cedilla]').cedilla({textMode:true});
+
+			$this.data('translated', true);
 		});
 
 		return this;
@@ -57,14 +68,18 @@
 
 	$.fn.cedilla._partials = function (options) {
 
-		options || (options = {});
+		options = _(options || {}).chain().clone().defaults({
+			search: true,
+		}).value();
 
-		_.defaults(options, {
-			search: true
-		});
-
-		var target = options.search ? this.find('*[data-partial]') : this,
+		var target = options.search ? this.find('[data-partial]') : this,
 			partials = {};
+
+		/*
+		target.find('[data-cedilla]').each(function(){
+			$(this).cedilla(options);
+		});
+		*/
 
 		target.each(function(){
 
@@ -79,11 +94,11 @@
 						($("<div />").append($(this).clone()).html());
 				$this.removeData('partial');
 				$this.removeAttr('data-partial');
-				func = cedilla.buildFunc(tmpl);
-				$this.data('compiledPartial',func);
+//				func = cedilla.buildFunc(tmpl);
+//				$this.data('compiledPartial',func);
 			}
 
-			partials[key] = func(options.data || {});
+			partials[key] = tmpl;//func(options.data || {});
 		});
 
 		return partials;

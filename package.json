@@ -9,7 +9,8 @@
 	},
 	"main"         : "cedilla.js",
 	"dependencies" : {
-		"underscore" : "1.1.6"
+		"underscore"        : ">= 1.1.6",
+		"underscore.string" : ">= 1.1.4"
 	},
 	"devDependencies" : ["docco >= 0.3"]
 }

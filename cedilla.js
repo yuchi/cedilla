@@ -48,7 +48,7 @@
 	cedilla.buildSettings = {
 		evaluate          : /\{#([\s\S]+?)#\}/g,
 		evaluateString    : /^\{#([\s\S]+?)#\}$/,
-		interpolate	      : /\{([^#\}]+[\s\S]*?)\}/g,
+		interpolate	      : /\{([^#\}]{1}[\S]*?)(?: as ([^\}]+)|)\}/g,
 		interpolateString : /^\{(\!|\^|)([^#\}]+[\s\S]*?)\}$/
 	};
 
@@ -61,8 +61,8 @@
 			'with(obj||{}){\n'+
 			cedilla.buildPartial(obj)+
 			"\n}return __p.join('');";
-		var func = new Function('obj', 'before', tmpl);
-		return data ? func(data) : func;
+		var func = new Function('obj', 'lang', 'before', tmpl);
+		return data ? func(data,lang) : func;
 	};
 
 	// Understands translation nature and creates bodies. 
@@ -129,8 +129,13 @@
 		return "print('" +
 		str.replace(/\\/g, '\\\\')
 			.replace(/'/g, "\\'")
-			.replace(c.interpolate, function(match, code) {
-			 return "'," + code.replace(/\\'/g, "'") + ",'";
+			.replace(c.interpolate, function(match, code, as) {
+				code = code && code.replace(/\\'/g, "'");
+				if (as) {
+					return "',lang.format(("+code+"),'"+as+"'),'";
+				} else {
+					return "'," + code + ",'";
+				}
 			})
 			.replace(c.evaluate || null, function(match, code) {
 			return "');" +
@@ -152,6 +157,8 @@
 
 	cedilla.languages = {};
 
+	cedilla.defaultsListeners = [];
+
 	var Language = function Language (code, name, rules) {
 		this.code = code;
 		this.name = name;
@@ -160,7 +167,9 @@
 		rules || (rules = {});
 		this.rules = _.defaults(rules, Language.defaultRules);
 		cedilla.languages[code] = this;
+		this.queue = cedilla.defaultsListeners;
 		this.retrieveInfo();
+		_.bindAll(this, 'format','flushQueue');
 	}
 
 	// Export Langauge inside Cedilla
@@ -179,16 +188,16 @@
 
 		// Retrieve informations from [Locale Planet](http://www.localeplanet.com)
 		retrieveInfo : function () {
-			this.icu = {};
+			this.icu = false;
 			var lang = this,
 				url = 'http://www.localeplanet.com/api/'+this.code+'/icu.js',
-				objectname = 'window.cedilla.languages.'+this.code+'.icu';
+				objectname = 'window.cedilla.languages.'+this.code;
 			if (root.jQuery && root.jQuery.ajax) {
 				root.jQuery.ajax({
 					url: url,
 					dataType: 'jsonp',
 					data: {
-						object: objectname
+						object:   objectname + '.icu',
 					},
 					jsonp: false,
 					/*jsonpCallback: 'load'+this.code+'info',*/
@@ -197,6 +206,13 @@
 						console.log(arguments);
 					}*/
 				});
+				// polling!
+				var intervalid = setInterval(function(){
+					if (lang.icu) {
+						clearInterval(intervalid);
+						lang.flushQueue();
+					} return;
+				},300);
 			} else {
 				var vm = require('vm'),
 					http = require('http'),
@@ -216,13 +232,27 @@
 							completeCode = untrustedCode.join('');
 							vm.runInNewContext(completeCode, sandbox);
 							lang.icu = sandbox.window.icu;
+							lang.flushQueue()
 						});
 					});
 			}
 		},
 
+		addToQueue: function (listener) {
+			if (this.icu) return listener();
+			this.queue.push(listener);
+		},
+
+		flushQueue: function (a) {
+			_(this.queue).each(function(listener){
+				listener();
+			});
+			this.queue = [];
+			return a;
+		},
+
 		// Actual translation method
-		translate: function (key, data) {
+		translate: function (key, data, before) {
 			var translation = this.translations[key];
 			if (!translation) {
 				var original = this.strings[key];
@@ -231,9 +261,20 @@
 				}
 			}
 			if (_.isFunction(translation)) {
-				return translation(data);
+				return translation(data,this,before);
 			} else {
 				return translation || key;
+			}
+		},
+
+		// Formats thing thanks to LocalePlanet
+		format: function(value,as) {
+			if (!this.icu) return value;
+			var dateValue = new Date(value);
+			if (_.isDate(value) || !isNaN(dateValue.getTime())) {
+				as = _(as).underscored().toUpperCase();
+				var ret = this.icu.getDateFormat(as).format(dateValue);
+				return ret;
 			}
 		},
 
@@ -279,13 +320,12 @@
 	// Reverse multiple injection method
 	cedilla.addAll = function (translations, lang) {
 		lang || (lang = cedilla.currentLanguage);
-		land.addAll(translation);
+		lang.addAll(translation);
 	}
 
 	// Actual tranlsate method
-	cedilla.translate = function (key,data,lang) {
-		lang || (lang = cedilla.currentLanguage);
-		return lang.translate(key,data);
+	cedilla.translate = function (key,data,before) {
+		return cedilla.currentLanguage.translate(key,data,before);
 	};
 
 	// Be able to use the `ç` character
