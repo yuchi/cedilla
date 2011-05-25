@@ -31,10 +31,14 @@
 	// Export the Cedilla object for **CommonJS**, with backwards-compatibility
 	// for the old `require()` API. If we're not in CommonJS, add `ç` and `cedilla`
 	// to the global object.
+	//
+	// Also define if we are in a browser or a **CommonJS** environment.
+	var isBrowser = true;
 	if (typeof module !== 'undefined' && module.exports) {
+		isBrowser = false;
 		module.exports = cedilla;
 		cedilla.cedilla = cedilla.cedilla = cedilla;
-		} else {
+	} else {
 		root.cedilla = cedilla;
 	}
 
@@ -192,7 +196,8 @@
 			var lang = this,
 				url = 'http://www.localeplanet.com/api/'+this.code+'/icu.js',
 				objectname = 'window.cedilla.languages.'+this.code;
-			if (root.jQuery && root.jQuery.ajax) {
+			if (isBrowser) {
+				// We are in the browser, let's use jQuery
 				root.jQuery.ajax({
 					url: url,
 					dataType: 'jsonp',
@@ -214,6 +219,7 @@
 					} return;
 				},300);
 			} else {
+				// No jQuery? We are in ssjs.
 				var vm = require('vm'),
 					http = require('http'),
 					untrustedCode = [],
@@ -232,7 +238,7 @@
 							completeCode = untrustedCode.join('');
 							vm.runInNewContext(completeCode, sandbox);
 							lang.icu = sandbox.window.icu;
-							lang.flushQueue()
+							lang.flushQueue();
 						});
 					});
 			}

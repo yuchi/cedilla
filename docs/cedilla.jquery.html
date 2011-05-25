@@ -1,0 +1,109 @@
+<!DOCTYPE html>  <html> <head>   <title>cedilla.jquery.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               cedilla.jquery.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">){</span>
+
+    <span class="kd">var</span> <span class="nb">window</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">cedilla</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">dataParam</span><span class="p">,</span> <span class="nx">lang</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="nx">options</span> <span class="o">||</span> <span class="p">(</span><span class="nx">options</span> <span class="o">=</span> <span class="p">{});</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">dataParam</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">lang</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">options</span><span class="p">.</span><span class="nx">dataParam</span> <span class="o">=</span> <span class="nx">dataParam</span><span class="p">;</span>
+                <span class="nx">options</span><span class="p">.</span><span class="nx">lang</span> <span class="o">=</span> <span class="nx">lang</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">dataParam</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">options</span><span class="p">.</span><span class="nx">lang</span> <span class="o">=</span> <span class="nx">dataParam</span><span class="p">;</span>
+                <span class="nx">options</span> <span class="o">=</span> <span class="nx">lang</span> <span class="o">||</span> <span class="nx">options</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">options</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">||</span> <span class="nx">options</span><span class="p">;</span>
+            <span class="nx">key</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">_</span><span class="p">.</span><span class="nx">defaults</span><span class="p">(</span><span class="nx">options</span><span class="p">,</span> <span class="p">{</span><span class="nx">textMode</span> <span class="o">:</span> <span class="kc">false</span><span class="p">});</span>
+
+        <span class="k">this</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+            <span class="kd">var</span> <span class="nx">$this</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+
+            <span class="kd">var</span> <span class="nx">nkey</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">||</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;cedilla&#39;</span><span class="p">);</span>
+
+            <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;cedilla&#39;</span><span class="p">,</span><span class="nx">$this</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;cedilla&#39;</span><span class="p">));</span>
+            <span class="nx">$this</span><span class="p">.</span><span class="nx">removeAttr</span><span class="p">(</span><span class="s1">&#39;data-cedilla&#39;</span><span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">nkey</span> <span class="o">||</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;translated&#39;</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">param</span> <span class="o">?</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">param</span><span class="p">)</span> <span class="o">:</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">();</span>
+                <span class="nx">onTranslateBody</span> <span class="o">=</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;ontranslate&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;onTranslate&#39;</span><span class="p">);</span>
+
+            <span class="kd">var</span> <span class="nx">onTranslate</span> <span class="o">=</span>
+                <span class="nx">onTranslateBody</span> <span class="o">?</span>
+                <span class="k">new</span> <span class="nb">Function</span><span class="p">(</span><span class="nx">onTranslateBody</span><span class="p">)</span> <span class="o">:</span>
+                <span class="kc">null</span><span class="p">;</span>
+
+            <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+            <span class="nx">_</span><span class="p">.</span><span class="nx">defaults</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">defualts</span><span class="p">);</span>
+
+            <span class="kd">var</span> <span class="nx">partials</span> <span class="o">=</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">cedilla</span><span class="p">.</span><span class="nx">_partials</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">$this</span><span class="p">,{</span>
+                <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span>
+            <span class="p">});</span>
+
+            <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">partials</span><span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">nkey</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+            <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nx">cedilla</span><span class="p">(</span><span class="nx">nkey</span><span class="p">,</span><span class="nx">data</span><span class="p">,</span><span class="nx">onTranslate</span><span class="p">);</span>
+
+            <span class="nx">$this</span><span class="p">[</span><span class="nx">options</span><span class="p">.</span><span class="nx">textMode</span> <span class="o">?</span> <span class="s1">&#39;text&#39;</span> <span class="o">:</span> <span class="s1">&#39;html&#39;</span><span class="p">](</span><span class="nx">msg</span><span class="p">);</span>
+
+            <span class="nx">$this</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;[data-cedilla]&#39;</span><span class="p">).</span><span class="nx">cedilla</span><span class="p">({</span><span class="nx">textMode</span><span class="o">:</span><span class="kc">true</span><span class="p">});</span>
+
+            <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;translated&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+        <span class="p">});</span>
+
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="p">}</span>
+
+    <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">cedilla</span><span class="p">.</span><span class="nx">_partials</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="nx">options</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nx">options</span> <span class="o">||</span> <span class="p">{}).</span><span class="nx">chain</span><span class="p">().</span><span class="nx">clone</span><span class="p">().</span><span class="nx">defaults</span><span class="p">({</span>
+            <span class="nx">search</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="p">}).</span><span class="nx">value</span><span class="p">();</span>
+
+        <span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">search</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;[data-partial]&#39;</span><span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">,</span>
+            <span class="nx">partials</span> <span class="o">=</span> <span class="p">{};</span>
+
+        <span class="cm">/*</span>
+<span class="cm">        target.find(&#39;[data-cedilla]&#39;).each(function(){</span>
+<span class="cm">            $(this).cedilla(options);</span>
+<span class="cm">        });</span>
+<span class="cm">        */</span>
+
+        <span class="nx">target</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+            <span class="nx">$this</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">func</span> <span class="o">=</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;compiledPartial&#39;</span><span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">func</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;partial&#39;</span><span class="p">),</span>
+                    <span class="nx">tmpl</span> <span class="o">=</span>
+                        <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;useInnerHtml&#39;</span><span class="p">)</span> <span class="o">?</span>
+                        <span class="k">this</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">:</span> 
+                        <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;&lt;div /&gt;&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">clone</span><span class="p">()).</span><span class="nx">html</span><span class="p">());</span>
+                <span class="nx">$this</span><span class="p">.</span><span class="nx">removeData</span><span class="p">(</span><span class="s1">&#39;partial&#39;</span><span class="p">);</span>
+                <span class="nx">$this</span><span class="p">.</span><span class="nx">removeAttr</span><span class="p">(</span><span class="s1">&#39;data-partial&#39;</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <pre><code>         func = cedilla.buildFunc(tmpl);
+         $this.data('compiledPartial',func);
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="p">}</span>
+
+            <span class="nx">partials</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">tmpl</span><span class="p">;</span><span class="c1">//func(options.data || {});</span>
+        <span class="p">});</span>
+
+        <span class="k">return</span> <span class="nx">partials</span><span class="p">;</span>
+
+    <span class="p">}</span>
+
+<span class="p">})(</span><span class="nx">jQuery</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
