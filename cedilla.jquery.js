@@ -21,13 +21,25 @@
 
 		_.defaults(options, {textMode : false});
 
+		var that = this;
+
 		this.each(function(){
 
 			var $this = $(this);
 
+			var ns = $this.data('cedillaNamespace') || $this.attr('data-cedilla-namespace');
+			if (ns) {
+				$this.find('label').each(function(){
+					var $t = $(this), forattr = $t.attr('for');
+					if (forattr) {
+						$t.data('cedilla',ns+'.'+forattr);
+					}
+				});
+			}
+
 			var nkey = key || $this.data('cedilla');
 
-			$this.data('cedilla',$this.attr('cedilla'));
+			$this.data('cedilla',$this.attr('data-cedilla'));
 			$this.removeAttr('data-cedilla');
 
 			if (!nkey || $this.data('translated')) {
